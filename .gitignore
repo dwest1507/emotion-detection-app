@@ -1,6 +1,3 @@
-# Custom files
-TECHNICAL_PLAN.md
-
 # Python
 __pycache__/
 *.py[cod]
