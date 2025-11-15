@@ -1,0 +1,36 @@
+# Requirements for Emotion Detection Model Training Notebooks
+# Python 3.11+ recommended
+
+# Core Data Science Libraries
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Image Processing
+Pillow>=10.0.0
+
+# Deep Learning Framework
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Machine Learning Utilities
+scikit-learn>=1.3.0
+
+# Progress Bars
+tqdm>=4.65.0
+
+# Jupyter Notebook Support
+jupyter>=1.0.0
+ipykernel>=6.25.0
+notebook>=6.5.0
+
+# Optional: For better notebook experience
+ipywidgets>=8.0.0
+
+# Note: For GPU support, install PyTorch with CUDA from:
+# https://pytorch.org/get-started/locally/
+# Example: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+

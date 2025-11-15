@@ -1,0 +1,3 @@
+# ONNX model files will be placed here
+# Note: .onnx files are in .gitignore due to size
+
