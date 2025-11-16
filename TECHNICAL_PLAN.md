@@ -1288,20 +1288,21 @@ jobs:
 ## Weekend 1: Data & Model Training (8-10 hours)
 
 **Saturday:**
-- [ ] Download & validate dataset (1 hour)
-- [ ] EDA in Jupyter notebook (2 hours)
-- [ ] Set up PyTorch training pipeline (2 hours)
+- [x] Download & validate dataset (1 hour)
+- [x] EDA in Jupyter notebook (2 hours)
+- [x] Set up PyTorch training pipeline (2 hours)
 
 **Sunday:**
-- [ ] Train model with transfer learning (2-3 hours)
-- [ ] Evaluate & visualize results (1 hour)
-- [ ] Export to ONNX & validate (1 hour)
-- [ ] Document training in notebook (1 hour)
+- [x] Train model with transfer learning (2-3 hours)
+- [x] Evaluate & visualize results (1 hour)
+- [x] Export to ONNX & validate (1 hour)
+- [x] Document training in notebook (1 hour)
 
 **Deliverables:** 
-- `emotion_classifier.onnx`
+- `models/emotion_classifier.onnx`
 - `notebooks/01_eda.ipynb`
 - `notebooks/02_training.ipynb`
+- `notebooks/03_onnx_export.ipynb`
 
 ## Weekend 2: Backend Development (8-10 hours)
 

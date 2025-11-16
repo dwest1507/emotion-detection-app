@@ -62,6 +62,7 @@ venv.bak/
 *.pb
 *.tflite
 models/*.onnx
+models/*.onnx.data
 models/*.pth
 models/*.pt
 
