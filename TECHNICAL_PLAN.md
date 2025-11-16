@@ -1307,17 +1307,17 @@ jobs:
 ## Weekend 2: Backend Development (8-10 hours)
 
 **Saturday:**
-- [ ] Set up FastAPI project structure (1 hour)
-- [ ] Implement ONNX inference (2 hours)
-- [ ] Add MediaPipe face detection (2 hours)
-- [ ] Create `/predict` endpoint (2 hours)
+- [x] Set up FastAPI project structure (1 hour)
+- [x] Implement ONNX inference (2 hours)
+- [x] Add MediaPipe face detection (2 hours)
+- [x] Create `/predict` endpoint (2 hours)
 
 **Sunday:**
-- [ ] Write unit tests (2 hours)
-- [ ] Add error handling (1 hour)
-- [ ] Create Dockerfile (1 hour)
-- [ ] Test locally with Docker (1 hour)
-- [ ] Add logging & monitoring (1 hour)
+- [x] Write unit tests (2 hours)
+- [x] Add error handling (1 hour)
+- [x] Create Dockerfile (1 hour)
+- [x] Test locally with Docker (1 hour)
+- [x] Add logging & monitoring (1 hour)
 
 **Deliverables:**
 - Working FastAPI backend

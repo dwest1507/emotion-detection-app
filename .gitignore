@@ -61,10 +61,10 @@ venv.bak/
 *.onnx
 *.pb
 *.tflite
-models/*.onnx
-models/*.onnx.data
-models/*.pth
-models/*.pt
+backend/models/*.onnx
+backend/models/*.data
+backend/models/*.pth
+backend/models/*.pt
 
 # Dataset files (too large for Git)
 data/
