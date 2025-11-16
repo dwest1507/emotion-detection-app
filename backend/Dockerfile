@@ -25,7 +25,7 @@ COPY app/ ./app/
 COPY models/emotion_classifier.onnx ./models/emotion_classifier.onnx
 COPY models/emotion_classifier.onnx.data ./models/emotion_classifier.onnx.data
 
-# Expose port 8000
+# Expose port 8000 (default, Railway will override with PORT env var)
 EXPOSE 8000
 
 # Set environment variables
@@ -33,5 +33,6 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 # Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use shell form to support PORT environment variable (Railway provides this)
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
 

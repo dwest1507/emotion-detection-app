@@ -1327,9 +1327,9 @@ jobs:
 ## Weekend 3: Deployment & Frontend Basics (8-10 hours)
 
 **Saturday:**
-- [ ] Deploy backend to Railway (2 hours)
-- [ ] Set up budget monitoring (30 min)
-- [ ] Test deployed API (30 min)
+- [x] Deploy backend to Railway (2 hours)
+- [x] Set up budget monitoring (30 min)
+- [x] Test deployed API (30 min)
 - [ ] Initialize Next.js project (1 hour)
 - [ ] Set up TailwindCSS + shadcn/ui (1 hour)
 - [ ] Create basic layout (2 hours)

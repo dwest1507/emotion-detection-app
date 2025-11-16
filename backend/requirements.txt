@@ -12,4 +12,5 @@ opencv-python-headless==4.8.1.78
 pytest==7.4.3
 pytest-asyncio==0.21.1
 httpx==0.25.2
+requests>=2.31.0  # For test_deployed_api.py script
 
