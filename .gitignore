@@ -58,10 +58,10 @@ venv.bak/
 .DS_Store
 
 # Model files (large, should be in .gitignore or use Git LFS)
-*.onnx
+#*.onnx
 *.pb
 *.tflite
-backend/models/*.onnx
+#backend/models/*.onnx
 backend/models/*.data
 backend/models/*.pth
 backend/models/*.pt

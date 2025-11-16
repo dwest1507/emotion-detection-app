@@ -22,8 +22,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY app/ ./app/
+
+# Copy model file
+# Note: emotion_classifier.onnx.data is optional (ONNX Runtime cache) and not required
+# ONNX Runtime will create it automatically if needed during first inference
+RUN mkdir -p ./models
 COPY models/emotion_classifier.onnx ./models/emotion_classifier.onnx
-COPY models/emotion_classifier.onnx.data ./models/emotion_classifier.onnx.data
 
 # Expose port 8000 (default, Railway will override with PORT env var)
 EXPOSE 8000
