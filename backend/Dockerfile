@@ -15,19 +15,19 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements file
-COPY requirements.txt .
+COPY backend/requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY app/ ./app/
+COPY backend/app/ ./app/
 
 # Copy model files
 # Note: If using Git LFS, ensure Railway is configured to pull LFS files during build
 # The .onnx.data file is optional (ONNX Runtime cache) and not required
 # Option 1: Copy entire models directory (preferred - works with Git LFS)
-COPY models/ ./models/
+COPY backend/models/ ./models/
 
 # Option 2: If model file is not available (e.g., Git LFS not configured in Railway),
 # uncomment the following lines and provide MODEL_URL as a build argument:
