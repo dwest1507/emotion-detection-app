@@ -7,8 +7,29 @@ This guide walks you through deploying the Emotion Detection API backend to Rail
 - GitHub account with the repository pushed
 - Railway account (sign up at [railway.app](https://railway.app))
 - Docker image builds successfully locally
+- **Git LFS configured** (model files are tracked with Git LFS)
 
 ## Step 1: Prepare Your Repository
+
+### 1.1 Verify Git LFS Setup
+
+The model file (`emotion_classifier.onnx`) is tracked with Git LFS. Ensure it's properly committed:
+
+```bash
+# Check if Git LFS is installed
+git lfs version
+
+# Verify the model file is tracked with LFS
+git lfs ls-files | grep emotion_classifier.onnx
+
+# If not tracked, add it:
+git lfs track "backend/models/*.onnx"
+git add .gitattributes
+git add backend/models/emotion_classifier.onnx
+git commit -m "Add model file with Git LFS"
+```
+
+### 1.2 Push to GitHub
 
 Ensure your backend code is pushed to GitHub:
 
@@ -17,7 +38,12 @@ cd backend
 git add .
 git commit -m "Prepare for Railway deployment"
 git push origin main
+
+# Important: Also push LFS files
+git lfs push origin main
 ```
+
+**Note**: Railway should automatically pull Git LFS files during the build. If you encounter issues, see the troubleshooting section below.
 
 ## Step 2: Create Railway Project
 
@@ -155,7 +181,13 @@ python test_deployed_api.py --url https://YOUR-RAILWAY-URL.up.railway.app
 - Check build logs in Railway dashboard
 - Verify Dockerfile is in correct location
 - Ensure all dependencies are in `requirements.txt`
-- Check that model files are included in Docker image
+- **Model file not found error**: 
+  - Verify Git LFS is properly configured: `git lfs ls-files`
+  - Ensure model file is committed: `git ls-files backend/models/emotion_classifier.onnx`
+  - Railway should automatically pull LFS files, but if it doesn't:
+    1. Check Railway build logs for LFS-related errors
+    2. As a workaround, you can host the model file elsewhere (GitHub Releases, S3, etc.)
+    3. Update Dockerfile to download the model using a build argument (see commented section in Dockerfile)
 
 ### Application Crashes
 

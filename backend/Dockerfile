@@ -23,11 +23,24 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY app/ ./app/
 
-# Copy model file
-# Note: emotion_classifier.onnx.data is optional (ONNX Runtime cache) and not required
-# ONNX Runtime will create it automatically if needed during first inference
-RUN mkdir -p ./models
-COPY models/emotion_classifier.onnx ./models/emotion_classifier.onnx
+# Copy model files
+# Note: If using Git LFS, ensure Railway is configured to pull LFS files during build
+# The .onnx.data file is optional (ONNX Runtime cache) and not required
+# Option 1: Copy entire models directory (preferred - works with Git LFS)
+COPY models/ ./models/
+
+# Option 2: If model file is not available (e.g., Git LFS not configured in Railway),
+# uncomment the following lines and provide MODEL_URL as a build argument:
+# ARG MODEL_URL
+# RUN if [ -z "$MODEL_URL" ]; then \
+#     echo "Error: Model file not found and MODEL_URL not provided. Please either:" && \
+#     echo "  1. Configure Git LFS in Railway, or" && \
+#     echo "  2. Provide MODEL_URL build argument pointing to model file URL" && \
+#     exit 1; \
+#     fi
+# RUN mkdir -p ./models && \
+#     wget -O ./models/emotion_classifier.onnx "$MODEL_URL" || \
+#     curl -o ./models/emotion_classifier.onnx "$MODEL_URL"
 
 # Expose port 8000 (default, Railway will override with PORT env var)
 EXPOSE 8000
