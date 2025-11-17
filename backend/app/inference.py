@@ -31,9 +31,15 @@ class EmotionClassifier:
         if not self.model_path.exists():
             raise FileNotFoundError(f"Model file not found: {self.model_path}")
         
+        # Configure session options for optimal performance
+        sess_options = ort.SessionOptions()
+        sess_options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_BASIC
+        
         # Create ONNX Runtime session with CPU provider
+        # The .data file (if present) will be automatically used for faster loading
         self.session = ort.InferenceSession(
             str(self.model_path),
+            sess_options=sess_options,
             providers=["CPUExecutionProvider"]
         )
         

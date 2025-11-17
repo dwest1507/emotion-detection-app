@@ -7,6 +7,7 @@ onnxruntime>=1.17.0
 mediapipe>=0.10.13
 pydantic==2.5.0
 opencv-python-headless==4.8.1.78
+huggingface-hub>=0.20.0  # For downloading models from Hugging Face
 
 # Test dependencies
 pytest==7.4.3

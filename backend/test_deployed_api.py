@@ -9,21 +9,36 @@ Usage:
 
 import argparse
 import io
+import os
 import sys
 import time
 from typing import Dict, Any
 import requests
-from PIL import Image
 
 
 def create_test_image() -> bytes:
-    """Create a simple test image for prediction testing."""
-    # Create a simple RGB image (224x224 to match model input)
-    image = Image.new('RGB', (224, 224), color=(100, 150, 200))
-    img_bytes = io.BytesIO()
-    image.save(img_bytes, format='JPEG')
-    img_bytes.seek(0)
-    return img_bytes.read()
+    """Create a test image for prediction testing."""
+    # Try to use an actual test image from the test suite if available
+    test_image_path = os.path.join(os.path.dirname(__file__), 'tests', 'images', 'happy.png')
+    
+    if os.path.exists(test_image_path):
+        # Use a real test image that has a face
+        with open(test_image_path, 'rb') as f:
+            return f.read()
+    else:
+        # Fallback: Create a simple RGB image (won't have a face, but at least it's valid)
+        try:
+            from PIL import Image
+            image = Image.new('RGB', (224, 224), color=(100, 150, 200))
+            img_bytes = io.BytesIO()
+            image.save(img_bytes, format='JPEG')
+            img_bytes.seek(0)
+            return img_bytes.read()
+        except ImportError:
+            raise FileNotFoundError(
+                "No test image found and PIL/Pillow not available. "
+                "Please ensure backend/tests/images/happy.png exists or install Pillow."
+            )
 
 
 def test_health_endpoint(base_url: str, verbose: bool = False) -> Dict[str, Any]:
@@ -111,12 +126,21 @@ def test_prediction_endpoint(base_url: str, verbose: bool = False) -> Dict[str, 
     
     url = f"{base_url}/predict"
     
-    # Create test image
-    print("Creating test image...")
+    # Get test image (prefer real test image with face)
+    print("Loading test image...")
     image_bytes = create_test_image()
     
+    # Determine file extension based on image type
+    test_image_path = os.path.join(os.path.dirname(__file__), 'tests', 'images', 'happy.png')
+    if os.path.exists(test_image_path):
+        filename = 'test_image.png'
+        content_type = 'image/png'
+    else:
+        filename = 'test_image.jpg'
+        content_type = 'image/jpeg'
+    
     # Prepare file upload
-    files = {'file': ('test_image.jpg', image_bytes, 'image/jpeg')}
+    files = {'file': (filename, image_bytes, content_type)}
     
     start_time = time.time()
     
@@ -172,16 +196,31 @@ def test_error_handling(base_url: str, verbose: bool = False) -> Dict[str, Any]:
     
     try:
         response = requests.post(url, files=files, timeout=10)
+        data = response.json()
         
-        if response.status_code == 400:
+        # API returns 200 with success: false for validation errors
+        if response.status_code == 200 and not data.get('success', True):
+            error_type = data.get('error', '')
+            if 'invalidfiletype' in error_type.lower() or 'file' in error_type.lower():
+                print(f"✅ Error handling works correctly")
+                print(f"   Error: {data.get('error')}")
+                print(f"   Message: {data.get('message')}")
+                return {"success": True, "data": data}
+            else:
+                print(f"⚠️  Unexpected error type: {error_type}")
+                return {"success": False, "data": data}
+        elif response.status_code == 400:
+            # Also accept HTTP 400 if API is updated to return it
             data = response.json()
-            print(f"✅ Error handling works correctly")
+            print(f"✅ Error handling works correctly (HTTP 400)")
             print(f"   Error: {data.get('error')}")
             print(f"   Message: {data.get('message')}")
             return {"success": True, "data": data}
         else:
-            print(f"⚠️  Unexpected status code: {response.status_code}")
-            return {"success": False, "status_code": response.status_code}
+            print(f"⚠️  Unexpected response - Status: {response.status_code}, Success: {data.get('success')}")
+            if verbose:
+                print(f"   Response: {data}")
+            return {"success": False, "status_code": response.status_code, "data": data}
             
     except Exception as e:
         print(f"❌ Error: {e}")

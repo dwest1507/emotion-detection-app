@@ -58,13 +58,13 @@ venv.bak/
 .DS_Store
 
 # Model files (large, should be in .gitignore or use Git LFS)
-#*.onnx
+*.onnx
 *.pb
 *.tflite
-#backend/models/*.onnx
-backend/models/*.data
-backend/models/*.pth
-backend/models/*.pt
+models/*.onnx
+models/*.data
+models/*.pth
+models/*.pt
 
 # Dataset files (too large for Git)
 data/
@@ -138,7 +138,7 @@ Desktop.ini
 !tailwind.config.js
 !next.config.js
 
-# Images (except sample images)
+# Images (except sample images and test images)
 *.jpg
 *.jpeg
 *.png
@@ -147,6 +147,12 @@ Desktop.ini
 *.tiff
 !public/samples/*.jpg
 !public/samples/*.png
+!backend/tests/images/*.jpg
+!backend/tests/images/*.jpeg
+!backend/tests/images/*.png
+!backend/tests/images/*.gif
+!backend/tests/images/*.bmp
+!backend/tests/images/*.tiff
 
 # Documentation builds
 docs/_build/

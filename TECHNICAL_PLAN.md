@@ -792,8 +792,11 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY ./app ./app
-COPY ./models ./models
+COPY backend/app ./app
+
+# Download model from Hugging Face Hub
+ARG HF_MODEL_ID=dwest1507/emotion-detection-model
+RUN python3 -c "from huggingface_hub import hf_hub_download; hf_hub_download(repo_id='${HF_MODEL_ID}', filename='emotion_classifier.onnx', local_dir='./models')"
 
 # Create non-root user for security
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
@@ -851,27 +854,34 @@ docker images emotion-api
    git push -u origin main
    ```
 
-2. **Create Railway Project:**
+2. **Upload Model to Hugging Face Hub:**
+   - Create model repository: `dwest1507/emotion-detection-model`
+   - Upload `emotion_classifier.onnx` using `scripts/upload_model_to_hf.sh`
+   - Make repository public (or use HF_TOKEN for private repos)
+
+3. **Create Railway Project:**
    - Go to [railway.app](https://railway.app)
    - Click "New Project" → "Deploy from GitHub repo"
-   - Select your backend repository
-   - Railway auto-detects Dockerfile
+   - Select your repository
+   - Railway auto-detects Dockerfile at root
 
-3. **Configure Environment Variables:**
+4. **Configure Environment Variables:**
    ```
    PORT=8000
    CONFIDENCE_THRESHOLD=0.6
    MAX_FILE_SIZE_MB=5
-   ENABLE_MULTIPLE_FACES=false
    ```
+   Optional build arguments:
+   - `HF_MODEL_ID=dwest1507/emotion-detection-model` (default)
+   - `HF_TOKEN` (only for private model repositories)
 
-4. **Set Up Budget Monitoring (CRITICAL!):**
+5. **Set Up Budget Monitoring (CRITICAL!):**
    - Go to Project Settings → Usage
    - Set usage limit: **$5.00/month**
    - Enable "Pause project when limit is reached" ✅
    - Add email alerts at 50%, 80%, 90%
    
-5. **Deploy:**
+6. **Deploy:**
    - Railway automatically builds and deploys
    - Wait ~5-10 minutes for first deployment
    - You get public URL: `https://emotion-api.up.railway.app`

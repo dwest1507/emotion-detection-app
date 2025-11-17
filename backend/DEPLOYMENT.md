@@ -7,43 +7,47 @@ This guide walks you through deploying the Emotion Detection API backend to Rail
 - GitHub account with the repository pushed
 - Railway account (sign up at [railway.app](https://railway.app))
 - Docker image builds successfully locally
-- **Git LFS configured** (model files are tracked with Git LFS)
+- **Hugging Face account** (sign up at [huggingface.co](https://huggingface.co)) for model hosting
 
 ## Step 1: Prepare Your Repository
 
-### 1.1 Verify Git LFS Setup
+### 1.1 Upload Model to Hugging Face Hub
 
-The model file (`emotion_classifier.onnx`) is tracked with Git LFS. Ensure it's properly committed:
+The model file (`emotion_classifier.onnx`) is hosted on Hugging Face Hub. First, upload it:
+
+**Option 1: Using the provided script**
 
 ```bash
-# Check if Git LFS is installed
-git lfs version
+# Install huggingface-hub if not already installed
+pip install huggingface-hub
 
-# Verify the model file is tracked with LFS
-git lfs ls-files | grep emotion_classifier.onnx
+# Install huggingface CLI by following these instructructions https://huggingface.co/docs/huggingface_hub/main/en/guides/cli
 
-# If not tracked, add it:
-git lfs track "backend/models/*.onnx"
-git add .gitattributes
-git add backend/models/emotion_classifier.onnx
-git commit -m "Add model file with Git LFS"
+# Login to Hugging Face (if not already logged in)
+hf auth login
+
+# Upload the model
+./scripts/upload_model_to_hf.sh dwest1507/emotion-detection-model models/emotion_classifier.onnx
 ```
 
-### 1.2 Push to GitHub
+**Option 2: Manual upload via web interface**
+
+1. Go to [huggingface.co](https://huggingface.co) and sign in
+2. Create a new model repository: `dwest1507/emotion-detection-model`
+3. Upload `emotion_classifier.onnx` to the repository
+4. Make the repository public (or keep it private and use HF_TOKEN in Railway)
+
+### 1.2 Push Code to GitHub
 
 Ensure your backend code is pushed to GitHub:
 
 ```bash
-cd backend
 git add .
 git commit -m "Prepare for Railway deployment"
 git push origin main
-
-# Important: Also push LFS files
-git lfs push origin main
 ```
 
-**Note**: Railway should automatically pull Git LFS files during the build. If you encounter issues, see the troubleshooting section below.
+**Note**: The model file is downloaded from Hugging Face Hub during the Docker build, so it doesn't need to be in the repository.
 
 ## Step 2: Create Railway Project
 
@@ -52,24 +56,22 @@ git lfs push origin main
 3. Select **"Deploy from GitHub repo"**
 4. Authorize Railway to access your GitHub account (if first time)
 5. Select your repository containing the backend code
-6. Railway will automatically detect the `Dockerfile` in the backend directory
+6. Railway will automatically detect the `Dockerfile` at the repository root
 
 ## Step 3: Configure Project Settings
 
-### 3.1 Set Root Directory (if needed)
-
-If your repository has both frontend and backend:
-1. Go to **Project Settings** → **Service Settings**
-2. Set **Root Directory** to `backend`
-3. This tells Railway where to find the Dockerfile
-
-### 3.2 Environment Variables
+### 3.1 Environment Variables
 
 Railway will automatically set the `PORT` environment variable. The Dockerfile is configured to use it.
+
+Optional build arguments you can set (if you want to use a different model):
+- `HF_MODEL_ID` - Hugging Face model repository ID (default: `dwest1507/emotion-detection-model`)
+- `MODEL_FILENAME` - Model filename (default: `emotion_classifier.onnx`)
 
 Optional environment variables you can set (if you want to customize):
 - `CONFIDENCE_THRESHOLD=0.6` (default in code)
 - `MAX_FILE_SIZE_MB=5` (default in code)
+- `HF_TOKEN` - Hugging Face token (only needed for private model repositories)
 
 To set environment variables:
 1. Go to your service in Railway dashboard
@@ -182,12 +184,11 @@ python test_deployed_api.py --url https://YOUR-RAILWAY-URL.up.railway.app
 - Verify Dockerfile is in correct location
 - Ensure all dependencies are in `requirements.txt`
 - **Model file not found error**: 
-  - Verify Git LFS is properly configured: `git lfs ls-files`
-  - Ensure model file is committed: `git ls-files backend/models/emotion_classifier.onnx`
-  - Railway should automatically pull LFS files, but if it doesn't:
-    1. Check Railway build logs for LFS-related errors
-    2. As a workaround, you can host the model file elsewhere (GitHub Releases, S3, etc.)
-    3. Update Dockerfile to download the model using a build argument (see commented section in Dockerfile)
+  - Verify the model is uploaded to Hugging Face Hub: https://huggingface.co/dwest1507/emotion-detection-model
+  - Check that the repository is public (or HF_TOKEN is set in Railway if private)
+  - Verify the model filename matches: `emotion_classifier.onnx`
+  - Check Railway build logs for Hugging Face download errors
+  - If using a different model repository, set `HF_MODEL_ID` build argument in Railway
 
 ### Application Crashes
 

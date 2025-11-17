@@ -18,27 +18,44 @@ from PIL import Image
 # Request ID context variable for tracking requests (defined early for use in logging)
 request_id_var: ContextVar[str] = ContextVar('request_id', default='')
 
-# Configure logging
+
+class RequestIDFilter(logging.Filter):
+    """Logging filter to add request ID to log records."""
+    
+    def filter(self, record):
+        # Always set request_id, defaulting to empty string if not set
+        record.request_id = request_id_var.get('') if request_id_var else ''
+        return True
+
+
+class SafeRequestIDFormatter(logging.Formatter):
+    """Custom formatter that safely handles missing request_id."""
+    
+    def format(self, record):
+        # Ensure request_id exists on the record
+        if not hasattr(record, 'request_id'):
+            record.request_id = request_id_var.get('') if request_id_var else ''
+        return super().format(record)
+
+
+# Configure logging with safe request_id handling
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - [%(request_id)s] - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+# Apply the filter and formatter to root logger to catch all log messages
+root_logger = logging.getLogger()
+for handler in root_logger.handlers:
+    handler.addFilter(RequestIDFilter())
+    handler.setFormatter(SafeRequestIDFormatter(
+        fmt='%(asctime)s - %(name)s - %(levelname)s - [%(request_id)s] - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    ))
+
 # Create logger
 logger = logging.getLogger(__name__)
-
-
-class RequestIDFilter(logging.Filter):
-    """Logging filter to add request ID to log records."""
-    
-    def filter(self, record):
-        record.request_id = request_id_var.get('')
-        return True
-
-
-# Add filter to logger
-logger.addFilter(RequestIDFilter())
 
 from app.config import (
     MAX_FILE_SIZE,

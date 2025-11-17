@@ -92,6 +92,7 @@ User → Next.js Frontend → FastAPI Backend → MediaPipe → ONNX Model → P
 **Deployment:**
 - Railway (backend)
 - Vercel (frontend)
+- Hugging Face Hub (model hosting)
 
 ### Data Flow
 
@@ -107,6 +108,7 @@ User → Next.js Frontend → FastAPI Backend → MediaPipe → ONNX Model → P
 
 - **Transfer Learning**: Leveraged pre-trained ImageNet weights for faster training and better accuracy
 - **ONNX Optimization**: Model exported to ONNX for efficient CPU inference
+- **Hugging Face Integration**: Model hosted on Hugging Face Hub for reliable deployment
 - **Face Detection Pipeline**: Automatic face detection and cropping before emotion classification
 - **Cold Start Handling**: Graceful handling of Railway's auto-sleep feature
 - **Error Handling**: Comprehensive error states (no face, multiple faces, low confidence)
@@ -162,13 +164,14 @@ npm run dev
 ### Docker (Backend)
 
 ```bash
-cd backend
-
-# Build image
+# Build image from repository root
 docker build -t emotion-api .
 
 # Run container
 docker run -p 8000:8000 emotion-api
+
+# Or with custom Hugging Face model repository
+docker build --build-arg HF_MODEL_ID=your-username/your-model -t emotion-api .
 ```
 
 ## 📁 Project Structure
@@ -177,22 +180,26 @@ docker run -p 8000:8000 emotion-api
 emotion-detection-app/
 ├── backend/              # FastAPI backend
 │   ├── app/              # Application code
-│   ├── models/           # ONNX model files
-│   ├── tests/            # Test suite
-│   └── Dockerfile
+│   └── tests/            # Test suite
 ├── frontend/             # Next.js frontend
 │   ├── app/              # Next.js app directory
 │   ├── components/       # React components
 │   └── lib/              # Utilities
+├── models/               # ONNX model files (hosted on Hugging Face)
+│   └── emotion_classifier.onnx
 ├── notebooks/            # Jupyter notebooks
 │   ├── 01_eda.ipynb      # Exploratory data analysis
 │   ├── 02_training.ipynb  # Model training
-│   └── 03_onnx_validation.ipynb
+│   └── 03_onnx_export.ipynb
+├── scripts/              # Utility scripts
+│   └── upload_model_to_hf.sh  # Upload model to Hugging Face
 ├── docs/                 # Documentation
 │   ├── MODEL_CARD.md
 │   ├── ARCHITECTURE.md
 │   ├── TRAINING_REPORT.md
 │   └── API_DOCUMENTATION.md
+├── Dockerfile            # Docker configuration (root)
+├── railway.json          # Railway deployment config
 └── README.md
 ```
 

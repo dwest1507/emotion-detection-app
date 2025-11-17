@@ -1,7 +1,7 @@
 """Pydantic models for request/response validation."""
 
 from typing import Dict, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class PredictionResponse(BaseModel):
@@ -24,12 +24,16 @@ class ErrorResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     """Response model for health check."""
+    model_config = ConfigDict(protected_namespaces=())
+    
     status: str = "ok"
     model_loaded: bool = Field(..., description="Whether the ONNX model is loaded")
 
 
 class ModelInfoResponse(BaseModel):
     """Response model for model information."""
+    model_config = ConfigDict(protected_namespaces=())
+    
     model_version: str
     model_architecture: str
     classes: list[str]

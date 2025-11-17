@@ -3,6 +3,8 @@
 from pathlib import Path
 
 # Model configuration
+# In Docker: /app/app/config.py -> /app/models/
+# Locally: backend/app/config.py -> models/ (at repo root)
 MODEL_PATH = Path(__file__).parent.parent / "models" / "emotion_classifier.onnx"
 EMOTION_CLASSES = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral']
 NUM_CLASSES = len(EMOTION_CLASSES)
