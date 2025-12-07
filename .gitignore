@@ -137,6 +137,7 @@ Desktop.ini
 !tsconfig.json
 !tailwind.config.js
 !next.config.js
+!.eslintrc.json
 
 # Images (except sample images and test images)
 *.jpg
@@ -172,3 +173,6 @@ mlruns/
 config.local.json
 settings.local.json
 
+
+# Allow frontend lib
+!frontend/lib/
