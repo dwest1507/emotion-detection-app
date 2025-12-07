@@ -25,6 +25,7 @@ COPY backend/app/ ./app/
 
 # Copy entrypoint script
 COPY scripts/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN sed -i 's/\r$//' ./docker-entrypoint.sh
 RUN chmod +x ./docker-entrypoint.sh
 
 # Download model from Hugging Face Hub
