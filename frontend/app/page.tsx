@@ -32,6 +32,9 @@ export default function Home() {
 
     try {
       const data = await predictEmotion(file);
+      if (!data.success) {
+        throw new Error(data.error || "Failed to analyze image");
+      }
       setResult(data);
     } catch (err) {
       console.error("Prediction error:", err);
@@ -56,7 +59,7 @@ export default function Home() {
         <ImageUpload onImageSelect={handleImageSelect} isLoading={loading} />
 
         {error && (
-          <Alert variant="destructive" className="max-w-md mx-auto text-left">
+          <Alert variant="destructive" className="max-w-md mx-auto text-left animate-in fade-in slide-in-from-top-2">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
@@ -64,12 +67,13 @@ export default function Home() {
         )}
 
         {loading && (
-          <div className="w-full max-w-md space-y-2">
-            <div className="h-2 bg-secondary rounded overflow-hidden">
-              <div className="h-full bg-primary animate-pulse w-full origin-left-right"></div>
+          <div className="w-full max-w-md space-y-4 animate-in fade-in">
+            <div className="space-y-2">
+              <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                <div className="h-full bg-primary animate-progress origin-left w-full"></div>
+              </div>
+              <p className="text-sm text-muted-foreground animate-pulse font-medium">Analyzing facial expressions...</p>
             </div>
-            {/* Simple indeterminate progress bar effect since we don't have CSS keyframes defined for 'progress' yet, using pulse */}
-            <p className="text-sm text-muted-foreground animate-pulse">Analyzing image...</p>
           </div>
         )}
 
@@ -83,6 +87,59 @@ export default function Home() {
           />
         )}
       </div>
+
+      {/* Sample Images Section */}
+      <div className="w-full max-w-4xl px-4 mt-8">
+        <h3 className="text-lg font-semibold mb-4 text-center">Don&apos;t have a photo? Try one of ours:</h3>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={async () => {
+              const response = await fetch("/samples/happy.png");
+              const blob = await response.blob();
+              const file = new File([blob], "happy_sample.png", { type: "image/png" });
+              handleImageSelect(file);
+            }}
+            disabled={loading}
+            className="group relative overflow-hidden rounded-lg border-2 border-transparent hover:border-primary transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/samples/happy.png"
+              alt="Happy Sample"
+              className="w-24 h-24 object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+          </button>
+        </div>
+      </div>
+
+      {/* How it Works Section */}
+      <div className="w-full max-w-5xl px-6 mt-16 grid md:grid-cols-3 gap-8 text-left">
+        <div className="bg-card border rounded-xl p-6 shadow-sm">
+          <div className="h-10 w-10 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 text-xl">📸</div>
+          <h3 className="font-semibold text-lg mb-2">1. Upload Photo</h3>
+          <p className="text-muted-foreground">Select a clear photo of a face. We support JPEG and PNG formats.</p>
+        </div>
+        <div className="bg-card border rounded-xl p-6 shadow-sm">
+          <div className="h-10 w-10 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 text-xl">🧠</div>
+          <h3 className="font-semibold text-lg mb-2">2. AI Analysis</h3>
+          <p className="text-muted-foreground">Our computer vision model (EfficientNet) detects the face and analyzes micro-expressions.</p>
+        </div>
+        <div className="bg-card border rounded-xl p-6 shadow-sm">
+          <div className="h-10 w-10 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4 text-xl">📊</div>
+          <h3 className="font-semibold text-lg mb-2">3. View Results</h3>
+          <p className="text-muted-foreground">Get instant feedback on the detected emotion with detailed confidence scores.</p>
+        </div>
+      </div>
+
+      {/* Privacy Note */}
+      <div className="mt-12 text-sm text-muted-foreground max-w-md mx-auto bg-muted/30 p-4 rounded-lg border border-border/50">
+        <p className="flex items-center justify-center gap-2">
+          <span className="text-lg">🔒</span>
+          <span><strong>Privacy First:</strong> Your images are processed in real-time and deleted immediately. We do not store any photos.</span>
+        </p>
+      </div>
+
     </div>
   );
 }

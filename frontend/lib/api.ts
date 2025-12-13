@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Default to localhost for development, or use environment variable
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
 export interface PredictionResponse {
     success: boolean;
