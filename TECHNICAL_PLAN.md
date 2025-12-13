@@ -1367,10 +1367,10 @@ jobs:
 **Sunday:**
 - [X] Deploy frontend to Vercel (1 hour)
 - [X] End-to-end testing (1 hour)
-- [ ] Write README.md (2 hours)
-- [ ] Add LICENSE and ATTRIBUTION.md files (30 min)
-- [ ] Create architecture diagrams (1.5 hours)
-- [ ] Portfolio documentation (1.5 hours)
+- [X] Write README.md (2 hours)
+- [X] Add LICENSE and ATTRIBUTION.md files (30 min)
+- [X] Create architecture diagrams (1.5 hours)
+- [X] Portfolio documentation (1.5 hours)
 - [ ] Record demo video (1 hour)
 
 **Deliverables:**
