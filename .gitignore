@@ -146,14 +146,12 @@ Desktop.ini
 *.gif
 *.bmp
 *.tiff
-!public/samples/*.jpg
-!public/samples/*.png
+!frontend/public/samples/*.jpg
+!frontend/public/samples/*.jpeg
+!frontend/public/samples/*.png
 !backend/tests/images/*.jpg
 !backend/tests/images/*.jpeg
 !backend/tests/images/*.png
-!backend/tests/images/*.gif
-!backend/tests/images/*.bmp
-!backend/tests/images/*.tiff
 
 # Documentation builds
 docs/_build/
